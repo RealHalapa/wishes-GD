@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wishes Geometry dash</title>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Wishes Geometry dash</h1>
+
+  <canvas id="gameCanvas" width="600" height="150"></canvas>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Dino
+    let dinoY = 100;
+    let dinoJumping = false;
+    let dinoJumpHeight = 50;
+
+    // Obstacles
+    let obstacleX = canvas.width;
+    let obstacleSpeed = 5;
+
+    // Score
+    let score = 0;
+
+    function drawDino() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(10, dinoY, 20, 30);
+    }
+
+    function drawObstacle() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(obstacleX, 115, 10, 15);
+    }
+
+    function drawScore() {
+      ctx.fillStyle = 'black';
+      ctx.font = '16px Arial';
+      ctx.fillText('Score: ' + score, 10, 20);
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Dino jump
+      if (dinoJumping) {
+        dinoY -= 2;
+        if (dinoY <= 100 - dinoJumpHeight) {
+          dinoJumping = false;
+        }
+      } else {
+        if (dinoY < 100) {
+          dinoY += 2;
+        }
+      }
+
+      // Obstacle movement
+      obstacleX -= obstacleSpeed;
+      if (obstacleX < -10) {
+        obstacleX = canvas.width;
+        score++;
+        obstacleSpeed += 0.1; // Increase speed
+      }
+
+      // Collision detection
+      if (
+        dinoY + 30 > 115 &&
+        10 + 20 > obstacleX &&
+        10 < obstacleX + 10
+      ) {
+        alert('Game Over! Score: ' + score + " thanks for playing :)");
+        resetGame();
+      }
+
+      drawDino();
+      drawObstacle();
+      drawScore();
+
+      requestAnimationFrame(update);
+    }
+
+    function resetGame() {
+      dinoY = 100;
+      dinoJumping = false;
+      obstacleX = canvas.width;
+      obstacleSpeed = 5;
+      score = 0;
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space' && !dinoJumping && dinoY >= 100) {
+        dinoJumping = true;
+      }
+    });
+
+    update();
+  </script>
+
+</body>
+</html>
